@@ -12,7 +12,7 @@ Added the storage of xp earned for 7 days.
 All functions can be disabled. 
 
 
-![Imagem do addon](https://cdn.discordapp.com/attachments/1285314566993219595/1285314610114592919/print01.png?ex=66e9d203&is=66e88083&hm=d3c980335ea346e1efb9b6ba1a9e30477cf9091514d18f3f87b43489b1ad394e&)
+![Imagem do addon](https://cdn.discordapp.com/attachments/1285314566993219595/1287462083511713845/image.png?ex=66f1a200&is=66f05080&hm=b73306638141b9eff4a5ef416d27aac1bb53ec31caf5809ead4bae2afc1a8fda&)
 
 Usage
 -------
