@@ -12,6 +12,7 @@ UpExperienceBar.defaults = {
     showXPPerHour = true,
     xpDisplayMode = "minute",  -- Default to XP per minute
     xpHistory = {},  -- Store XP history for 7 days
+    trackXP = true  -- New option to enable/disable XP tracking
 }
 
 -- Variables for tracking XP gain over time
@@ -74,35 +75,22 @@ end
 -- Core Functionality --
 ------------------------
 
--- Check if the player has reached level 50
-function UpExperienceBar:CheckLevelCap()
+-- Check if the player is at level 50 and track Champion Points
+function UpExperienceBar:IsChampionLevel()
     local playerLevel = GetUnitLevel("player")
+    local championXP = GetPlayerChampionXP()
+
     if playerLevel >= 50 then
-        -- If player is level 50 or above, disable the addon
-        d("You have reached level 50. The XP tracking will be disabled.")
-        self:DisableAddon()
-        return true  -- Level 50 or higher
+        -- If the player is level 50 or higher, track Champion Points
+        return true, championXP
+    else
+        -- Otherwise, return the regular XP
+        return false, GetUnitXP("player")
     end
-    return false  -- Below level 50
 end
 
--- Disable the addon and stop tracking XP
-function UpExperienceBar:DisableAddon()
-    self.saveData.enabled = false
-    EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_EXPERIENCE_UPDATE)
-    -- Hide the XP bar and disable any further updates
-    ZO_PlayerProgress:SetHidden(true)
-    self.xpProgressLabel:SetHidden(true)
-    self.xpPerHourLabel:SetHidden(true)
-end
-
--- Use the existing player XP bar and make it visible permanently
+-- Use the existing player XP or CP bar and make it visible permanently
 function UpExperienceBar:UseExistingXPBar()
-    -- Check if player is already at level 50
-    if self:CheckLevelCap() then
-        return  -- Stop if level 50
-    end
-
     -- Ensure the player progress bar exists
     if ZO_PlayerProgress then
         -- Make the XP bar permanently visible by adding it to the HUD scene
@@ -130,12 +118,15 @@ function UpExperienceBar:UseExistingXPBar()
     end
 end
 
--- Update the XP progress label
+-- Update the XP or Champion Points progress label
 function UpExperienceBar:UpdateXPBar()
-    -- Check if player has reached level 50
-    if self:CheckLevelCap() then
-        return  -- Stop if level 50
+    -- Check if XP tracking is disabled
+    if not self.saveData.trackXP then
+        return  -- Do nothing if XP tracking is disabled
     end
+
+    -- Check if player is at champion level
+    local isChampion, currentXP = self:IsChampionLevel()
 
     -- Check if the label has been created
     if not self.xpProgressLabel or not self.xpPerHourLabel then
@@ -143,8 +134,12 @@ function UpExperienceBar:UpdateXPBar()
     end
 
     -- Get current and maximum XP values
-    local currentXP = GetUnitXP("player")
-    local maxXP = GetUnitXPMax("player")
+    local maxXP
+    if isChampion then
+        maxXP = GetPlayerChampionXPMax()
+    else
+        maxXP = GetUnitXPMax("player")
+    end
 
     -- Check if values are valid
     if currentXP == nil or maxXP == nil then
@@ -187,7 +182,7 @@ function UpExperienceBar:UpdateXPBar()
     self:LogXPHistory(xpGained)
 end
 
--- Log XP gained and maintain a 7-day history
+-- Log XP or Champion Points gained and maintain a 7-day history
 function UpExperienceBar:LogXPHistory(xpGained)
     local today = os.date("%Y-%m-%d")
 
@@ -217,16 +212,20 @@ end
 
 -- Enable the XP bar and make it visible
 function UpExperienceBar:Enable()
-    -- Check if player is already at level 50
-    if self:CheckLevelCap() then
-        return  -- Stop if level 50
-    end
-
-    -- Use the existing XP bar
+    -- Use the existing XP or CP bar
     self:UseExistingXPBar()
 
     -- Update the XP bar on load
     self:UpdateXPBar()
+end
+
+-- Function to get the formatted XP history
+function UpExperienceBar:GetFormattedXPHistory()
+    local historyText = "XP Gained (Last 7 Days):\n"
+    for date, xp in pairs(self.saveData.xpHistory) do
+        historyText = historyText .. zo_strformat("<<1>>: <<2>> XP\n", date, ZO_CommaDelimitNumber(xp))
+    end
+    return historyText
 end
 
 ----------------------
@@ -265,6 +264,21 @@ function UpExperienceBar:CreateSettingsMenu()
             end,
         },
         {
+            type = "checkbox",
+            name = "Enable XP Tracking",
+            tooltip = "Enable/Disable XP tracking.",
+            getFunc = function() return self.saveData.trackXP end,
+            setFunc = function(value)
+                self.saveData.trackXP = value
+                if not value then
+                    d("XP tracking disabled.")
+                else
+                    d("XP tracking enabled.")
+                    self:UpdateXPBar()  -- Update immediately if tracking is enabled again
+                end
+            end,
+        },
+        {
             type = "dropdown",
             name = "XP Display Mode",
             tooltip = "Choose whether to display XP per hour or XP per minute.",
@@ -278,12 +292,8 @@ function UpExperienceBar:CreateSettingsMenu()
         {
             type = "description",
             text = function()
-                -- Display the XP history for the last 7 days
-                local historyText = "XP Gained (Last 7 Days):\n"
-                for date, xp in pairs(self.saveData.xpHistory) do
-                    historyText = historyText .. zo_strformat("<<1>>: <<2>> XP\n", date, xp)
-                end
-                return historyText
+                -- Display the XP history for the last 7 days dynamically
+                return UpExperienceBar:GetFormattedXPHistory()
             end,
         },
         {
