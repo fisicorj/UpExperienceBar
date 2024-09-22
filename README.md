@@ -14,6 +14,9 @@ All functions can be disabled.
 
 ![Imagem do addon](https://cdn.discordapp.com/attachments/1285314566993219595/1287462083511713845/image.png?ex=66f1a200&is=66f05080&hm=b73306638141b9eff4a5ef416d27aac1bb53ec31caf5809ead4bae2afc1a8fda&)
 
+![Imagem do addon](https://cdn.discordapp.com/attachments/1285314566993219595/1287462697822191750/image.png?ex=66f1a293&is=66f05113&hm=85a9cd177207fc9f324947e1ba85ee78f1a03e238a0afcdb7bcc480a3de2153f&)
+
+
 Usage
 -------
 
