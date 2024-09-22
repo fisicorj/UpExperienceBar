@@ -2,7 +2,7 @@
 
 UpExperienceBar is an independently developed addon for the game Elder Scrolls Online (ESO), designed to provide players with a detailed view of their experience (XP) progress. This addon allows players to track their XP gains in real-time, displaying information such as percentage progress, XP gained per minute or per hour, and maintaining a 7-day history of XP gained.
 
-# Imagens
+# Images
 
 ![Imagem do addon](https://cdn.discordapp.com/attachments/1285314566993219595/1287462083511713845/image.png?ex=66f1a200&is=66f05080&hm=b73306638141b9eff4a5ef416d27aac1bb53ec31caf5809ead4bae2afc1a8fda&)
 
@@ -21,7 +21,8 @@ UpExperienceBar is an independently developed addon for the game Elder Scrolls O
 # Important:
 
 UpExperienceBar is provided "as is" and has no official affiliation with ZeniMax Online Studios, Bethesda Softworks, or any other entity associated with the development and publishing of Elder Scrolls Online.
-This addon was created to enhance the player’s experience in tracking progress but may be affected by future game updates. We recommend regularly checking for addon updates in the repository.
+This addon was created to enhance the player’s experience in tracking progress but may be affected by future game updates. 
+We recommend regularly checking for addon updates in the repository.
 The use of this addon is optional and at the user’s own risk. We do not guarantee full compatibility with all versions of the game or with other addons.
 We are not responsible for any data loss, performance issues, or compatibility problems that may arise during the use of the addon.
 
