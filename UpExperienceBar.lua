@@ -74,8 +74,35 @@ end
 -- Core Functionality --
 ------------------------
 
+-- Check if the player has reached level 50
+function UpExperienceBar:CheckLevelCap()
+    local playerLevel = GetUnitLevel("player")
+    if playerLevel >= 50 then
+        -- If player is level 50 or above, disable the addon
+        d("You have reached level 50. The XP tracking will be disabled.")
+        self:DisableAddon()
+        return true  -- Level 50 or higher
+    end
+    return false  -- Below level 50
+end
+
+-- Disable the addon and stop tracking XP
+function UpExperienceBar:DisableAddon()
+    self.saveData.enabled = false
+    EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_EXPERIENCE_UPDATE)
+    -- Hide the XP bar and disable any further updates
+    ZO_PlayerProgress:SetHidden(true)
+    self.xpProgressLabel:SetHidden(true)
+    self.xpPerHourLabel:SetHidden(true)
+end
+
 -- Use the existing player XP bar and make it visible permanently
 function UpExperienceBar:UseExistingXPBar()
+    -- Check if player is already at level 50
+    if self:CheckLevelCap() then
+        return  -- Stop if level 50
+    end
+
     -- Ensure the player progress bar exists
     if ZO_PlayerProgress then
         -- Make the XP bar permanently visible by adding it to the HUD scene
@@ -105,6 +132,11 @@ end
 
 -- Update the XP progress label
 function UpExperienceBar:UpdateXPBar()
+    -- Check if player has reached level 50
+    if self:CheckLevelCap() then
+        return  -- Stop if level 50
+    end
+
     -- Check if the label has been created
     if not self.xpProgressLabel or not self.xpPerHourLabel then
         return
@@ -185,6 +217,11 @@ end
 
 -- Enable the XP bar and make it visible
 function UpExperienceBar:Enable()
+    -- Check if player is already at level 50
+    if self:CheckLevelCap() then
+        return  -- Stop if level 50
+    end
+
     -- Use the existing XP bar
     self:UseExistingXPBar()
 
@@ -200,9 +237,9 @@ function UpExperienceBar:CreateSettingsMenu()
     -- Create the settings panel using LibAddonMenu
     local panelData = {
         type = "panel",
-        name = "UpExperienceBar Settings",
+        name = "Up Experience Bar Settings",
         author = "Fisicorj",
-        version = "2.0",
+        version = "2.1",
     }
 
     -- Add options for enabling/disabling each label
