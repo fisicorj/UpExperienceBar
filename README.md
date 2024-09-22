@@ -11,6 +11,8 @@ Added the storage of xp earned for 7 days.
 
 All functions can be disabled. 
 
+Automatically disables at level 50.
+
 
 ![Imagem do addon](https://cdn.discordapp.com/attachments/1285314566993219595/1287462083511713845/image.png?ex=66f1a200&is=66f05080&hm=b73306638141b9eff4a5ef416d27aac1bb53ec31caf5809ead4bae2afc1a8fda&)
 
